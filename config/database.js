@@ -26,20 +26,25 @@
 // testConnection();
 
 // module.exports = sequelize;
-const { Sequelize } = require('sequelize');
 require('dotenv').config();
 
-const sequelize = new Sequelize(process.env.DATABASE_URL, {
+const { Sequelize } = require('sequelize');
+
+const isProduction = process.env.NODE_ENV === 'production';
+
+const databaseUrl = isProduction
+  ? process.env.DATABASE_URL // Esta variable debe estar definida en Railway (producción)
+  : 'postgres://postgres:zeus2025@localhost:5432/turnos_barber'; // Local
+
+const sequelize = new Sequelize(databaseUrl, {
   dialect: 'postgres',
   protocol: 'postgres',
-  dialectOptions: {
-    ssl: process.env.NODE_ENV === 'production'
-      ? {
-          require: true,
-          rejectUnauthorized: false,
-        }
-      : false,
-  },
+  dialectOptions: isProduction ? {
+    ssl: {
+      require: true,
+      rejectUnauthorized: false,
+    }
+  } : {},
   logging: false,
 });
 
