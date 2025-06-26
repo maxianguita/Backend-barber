@@ -27,14 +27,15 @@
 
 // module.exports = sequelize;
 require('dotenv').config();
-
 const { Sequelize } = require('sequelize');
 
 const isProduction = process.env.NODE_ENV === 'production';
 
+// Normaliza la URL si viene con "postgresql://"
+const rawUrl = process.env.DATABASE_URL || '';
 const databaseUrl = isProduction
-  ? process.env.DATABASE_URL // Esta variable debe estar definida en Railway (producción)
-  : 'postgres://postgres:zeus2025@localhost:5432/turnos_barber'; // Local
+  ? rawUrl.replace('postgresql://', 'postgres://')
+  : 'postgres://postgres:zeus2025@localhost:5432/turnos_barber';
 
 const sequelize = new Sequelize(databaseUrl, {
   dialect: 'postgres',
