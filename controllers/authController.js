@@ -92,8 +92,9 @@ const authController = {
       if (!nombre || !email || !password || !rol) {
         return res.status(400).json({ message: 'Faltan campos obligatorios' });
       }
+      const cleanEmail = email.trim().toLowerCase();
 
-      const existingUser = await User.findOne({ where: { email } });
+      const existingUser = await User.findOne({ where: { email: cleanEmail } });
       if (existingUser) {
         return res.status(400).json({ message: 'El usuario ya existe' });
       }
@@ -103,7 +104,7 @@ const authController = {
 
       const newUser = await User.create({
         nombre,
-        email,
+        email: cleanEmail,
         password: hashedPassword,
         rol,
       });
@@ -124,7 +125,9 @@ const authController = {
       const { email, password } = req.body;
       // console.log("📥 Login recibido:", email, password);
 
-      const user = await User.findOne({ where: { email } });
+      const cleanEmail = email.trim().teLowerCase();
+
+      const user = await User.findOne({ where: { email: cleanEmail } });
 
       if (!user) {
         console.log("❌ Usuario no encontrado");
