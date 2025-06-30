@@ -125,7 +125,7 @@ const authController = {
       const { email, password } = req.body;
       // console.log("📥 Login recibido:", email, password);
 
-      const cleanEmail = email.trim().teLowerCase();
+      const cleanEmail = email.trim().toLowerCase()
 
       const user = await User.findOne({ where: { email: cleanEmail } });
 
