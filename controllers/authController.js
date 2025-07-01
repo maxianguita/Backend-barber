@@ -89,10 +89,14 @@ const authController = {
     try {
       const { nombre, email, password, rol } = req.body;
 
+      console.log('📥 Password recibido en REGISTER:', password);
+
       if (!nombre || !email || !password || !rol) {
         return res.status(400).json({ message: 'Faltan campos obligatorios' });
       }
+
       const cleanEmail = email.trim().toLowerCase();
+      console.log('📧 Email limpio en REGISTER:', cleanEmail);
 
       const existingUser = await User.findOne({ where: { email: cleanEmail } });
       if (existingUser) {
@@ -102,12 +106,16 @@ const authController = {
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash(password, salt);
 
+      console.log('🔑 Password hasheado en REGISTER:', hashedPassword);
+
       const newUser = await User.create({
         nombre,
         email: cleanEmail,
         password: hashedPassword,
         rol,
       });
+
+      console.log('✅ Usuario guardado con hash:', newUser.password);
 
       res.status(201).json({
         message: 'Usuario creado correctamente',
@@ -123,9 +131,11 @@ const authController = {
   login: async (req, res) => {
     try {
       const { email, password } = req.body;
-      // console.log("📥 Login recibido:", email, password);
 
-      const cleanEmail = email.trim().toLowerCase()
+      console.log('📥 Password recibido en LOGIN:', password);
+
+      const cleanEmail = email.trim().toLowerCase();
+      console.log('📧 Email limpio en LOGIN:', cleanEmail);
 
       const user = await User.findOne({ where: { email: cleanEmail } });
 
@@ -135,6 +145,7 @@ const authController = {
       }
 
       console.log("👤 Usuario encontrado:", user.email);
+      console.log("🔑 Hash en DB:", user.password);
 
       const isMatch = await bcrypt.compare(password, user.password);
       console.log("🔍 Comparación de contraseña:", isMatch);
